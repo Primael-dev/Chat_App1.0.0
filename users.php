@@ -7,7 +7,6 @@
 ?>
 <?php include_once "header.php"; ?>
 <body>
-  <?php include_once "nav.php"; ?>
   <div class="wrapper">
     <section class="users">
       <header>
