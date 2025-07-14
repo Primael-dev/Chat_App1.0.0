@@ -340,6 +340,32 @@
     .post-card {
       animation: slideInUp 0.5s ease-out;
     }
+
+    .comment-toggle-btn {
+      background: linear-gradient(90deg, var(--color-accent), var(--color-status-online));
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px var(--color-shadow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+      margin-left: 10px;
+    }
+    .comment-toggle-btn:hover {
+      background: linear-gradient(90deg, var(--color-status-online), var(--color-accent));
+      box-shadow: 0 4px 16px var(--color-shadow);
+      transform: translateY(-2px) scale(1.04);
+    }
+    .comment-toggle-btn.open {
+      background: linear-gradient(90deg, var(--color-accent), #3a6b54);
+      color: #fff;
+    }
     
     /* Responsive design */
     @media (max-width: 768px) {
@@ -441,8 +467,9 @@
       <div class="wrapper">
         <section class="profile">
           <h2>Mon profil</h2>
-          <form id="postForm" method="POST">
+          <form id="postForm" method="POST" enctype="multipart/form-data">
             <textarea name="content" id="content" rows="3" placeholder="Exprime-toi..."></textarea>
+            <input type="file" id="postImage" name="image" accept="image/*" style="margin-top:10px;">
             <button type="submit">Publier</button>
             <div id="postMessage"></div>
           </form>
@@ -488,7 +515,14 @@
     function createPostCard(post) {
       const timeAgo = formatDate(post.created_at);
       const initials = (post.user.fname.charAt(0) + post.user.lname.charAt(0)).toUpperCase();
-      
+      const likeBtnClass = post.has_liked ? 'like-button liked' : 'like-button';
+      const likeIcon = post.has_liked ? 'fas fa-heart' : 'far fa-heart';
+      const commentsSectionId = `comments-section-${post.id}`;
+      const commentInputId = `comment-input-${post.id}`;
+      const commentBtnId = `comment-btn-${post.id}`;
+      const isOpen = window.openComments && window.openComments[post.id];
+      const commentBtnClass = 'comment-toggle-btn' + (isOpen ? ' open' : '');
+      const commentIcon = isOpen ? 'fas fa-comments' : 'far fa-comments';
       return `
         <div class="post-card">
           <div class="post-header">
@@ -514,14 +548,28 @@
                 <span>12 vues</span>
               </div>
               <div class="stat-item">
+                <i class="far fa-heart"></i>
+                <span>${post.like_count} j'aime${post.like_count > 1 ? 's' : ''}</span>
+              </div>
+              <div class="stat-item">
                 <i class="far fa-comment"></i>
-                <span>3 commentaires</span>
+                <span id="comment-count-${post.id}">${post.comment_count !== undefined ? post.comment_count : 0} commentaire${post.comment_count > 1 ? 's' : ''}</span>
               </div>
             </div>
-            <button class="like-button" onclick="likePost(${post.id})">
-              <i class="far fa-heart"></i>
+            <button class="${likeBtnClass}" onclick="likePost(${post.id})">
+              <i class="${likeIcon}"></i>
               <span>J'aime</span>
             </button>
+            <button class="${commentBtnClass}" onclick="toggleComments(${post.id})" id="comment-toggle-btn-${post.id}">
+              <i class="${commentIcon}"></i> <span>${isOpen ? 'Masquer' : 'Voir'} les commentaires</span>
+            </button>
+          </div>
+          <div class="comments-section" id="comments-section-${post.id}" style="display:none; margin-top:15px;">
+            <div class="comments-list"></div>
+            <form class="add-comment-form" onsubmit="return submitComment(event, ${post.id})" style="margin-top:10px; display:flex; gap:8px;">
+              <input type="text" id="comment-input-${post.id}" placeholder="Ajouter un commentaire..." style="flex:1; padding:6px; border-radius:6px; border:1px solid #ccc;">
+              <button type="submit" id="comment-btn-${post.id}" style="padding:6px 14px; border-radius:6px; background:var(--color-status-online); color:white; border:none;">Envoyer</button>
+            </form>
           </div>
         </div>
       `;
@@ -592,29 +640,120 @@
     document.getElementById('postForm').onsubmit = function(e) {
       e.preventDefault();
       var content = document.getElementById('content').value;
-      
-      if (!content.trim()) {
-        document.getElementById('postMessage').innerHTML = '<div style="color: var(--color-error-text); background-color: var(--color-error-bg); padding: 10px; border-radius: 5px;">Veuillez saisir un contenu</div>';
+      var imageInput = document.getElementById('postImage');
+      var imageFile = imageInput.files[0];
+      if (!content.trim() && !imageFile) {
+        document.getElementById('postMessage').innerHTML = '<div style="color: var(--color-error-text); background-color: var(--color-error-bg); padding: 10px; border-radius: 5px;">Veuillez saisir un contenu ou choisir une image</div>';
         return;
       }
-      
-      // Appel AJAX pour créer le post
+      var formData = new FormData();
+      formData.append('content', content);
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
       var xhr = new XMLHttpRequest();
       xhr.open('POST', '../php/create_post.php', true);
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
       xhr.onload = function() {
           document.getElementById('postMessage').innerHTML = '<div style="color: var(--color-status-online); background-color: rgba(70, 134, 105, 0.1); padding: 10px; border-radius: 5px;">' + xhr.responseText + '</div>';
           document.getElementById('content').value = '';
+          imageInput.value = '';
           loadPosts();
       };
       xhr.onerror = function() {
           document.getElementById('postMessage').innerHTML = '<div style="color: var(--color-error-text); background-color: var(--color-error-bg); padding: 10px; border-radius: 5px;">Erreur lors de la création du post</div>';
       };
-      xhr.send('content=' + encodeURIComponent(content));
+      xhr.send(formData);
     };
     
     // Chargement initial
     loadPosts();
+
+    // Nouvelle fonction pour afficher/masquer les commentaires
+    window.openComments = {};
+    function toggleComments(postId) {
+      const section = document.getElementById(`comments-section-${postId}`);
+      const btn = document.getElementById(`comment-toggle-btn-${postId}`);
+      if (section.style.display === 'none') {
+        section.style.display = 'block';
+        window.openComments[postId] = true;
+        if(btn) btn.classList.add('open');
+        if(btn) btn.querySelector('i').className = 'fas fa-comments';
+        if(btn) btn.querySelector('span').innerText = 'Masquer les commentaires';
+        loadComments(postId);
+      } else {
+        section.style.display = 'none';
+        window.openComments[postId] = false;
+        if(btn) btn.classList.remove('open');
+        if(btn) btn.querySelector('i').className = 'far fa-comments';
+        if(btn) btn.querySelector('span').innerText = 'Voir les commentaires';
+      }
+    }
+
+    // Charger les commentaires d'un post
+    function loadComments(postId) {
+      const section = document.getElementById(`comments-section-${postId}`);
+      const list = section.querySelector('.comments-list');
+      list.innerHTML = '<div style="text-align:center;color:#888;">Chargement...</div>';
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', `../php/get_comments.php?post_id=${postId}`, true);
+      xhr.onload = function() {
+        try {
+          const comments = JSON.parse(xhr.responseText);
+          if (comments.length === 0) {
+            list.innerHTML = '<div style="color:#888;">Aucun commentaire pour ce post.</div>';
+          } else {
+            list.innerHTML = comments.map(c => renderComment(c)).join('');
+          }
+          // Mettre à jour le compteur de commentaires
+          document.getElementById(`comment-count-${postId}`).innerText = `${comments.length} commentaire${comments.length > 1 ? 's' : ''}`;
+        } catch (e) {
+          list.innerHTML = '<div style="color:red;">Erreur lors du chargement des commentaires</div>';
+        }
+      };
+      xhr.onerror = function() {
+        list.innerHTML = '<div style="color:red;">Erreur de connexion</div>';
+      };
+      xhr.send();
+    }
+
+    // Rendu d'un commentaire
+    function renderComment(comment) {
+      const initials = (comment.user.fname.charAt(0) + comment.user.lname.charAt(0)).toUpperCase();
+      return `
+        <div style="display:flex;align-items:center;margin-bottom:8px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, var(--color-status-online), var(--color-accent));color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;margin-right:8px;">${initials}</div>
+          <div>
+            <div style="font-weight:500;">${comment.user.fname} ${comment.user.lname}</div>
+            <div style="font-size:13px;color:#666;">${comment.comment}</div>
+            <div style="font-size:11px;color:#aaa;">${formatDate(comment.created_at)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Soumission d'un commentaire
+    function submitComment(e, postId) {
+      e.preventDefault();
+      const input = document.getElementById(`comment-input-${postId}`);
+      const btn = document.getElementById(`comment-btn-${postId}`);
+      const section = document.getElementById(`comments-section-${postId}`);
+      if (!input.value.trim()) return false;
+      btn.disabled = true;
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '../php/add_comment.php', true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.onload = function() {
+        btn.disabled = false;
+        input.value = '';
+        loadComments(postId);
+      };
+      xhr.onerror = function() {
+        btn.disabled = false;
+        alert('Erreur lors de l\'ajout du commentaire');
+      };
+      xhr.send('post_id=' + postId + '&comment=' + encodeURIComponent(input.value));
+      return false;
+    }
   </script>
 </body>
 </html>
