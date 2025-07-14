@@ -523,6 +523,10 @@
       const isOpen = window.openComments && window.openComments[post.id];
       const commentBtnClass = 'comment-toggle-btn' + (isOpen ? ' open' : '');
       const commentIcon = isOpen ? 'fas fa-comments' : 'far fa-comments';
+      let imageHtml = '';
+      if (post.image) {
+        imageHtml = `<div style="margin:10px 0;"><img src="../php/images/${post.image}" alt="Image du post" style="max-width:100%;border-radius:10px;box-shadow:0 2px 8px var(--color-shadow);"></div>`;
+      }
       return `
         <div class="post-card">
           <div class="post-header">
@@ -540,7 +544,7 @@
           <div class="post-content">
             ${post.content.replace(/\n/g, '<br>')}
           </div>
-          
+          ${imageHtml}
           <div class="post-actions">
             <div class="post-stats">
               <div class="stat-item">
