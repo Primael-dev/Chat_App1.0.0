@@ -26,15 +26,15 @@
                             $time = time();
                             $new_img_name = $time.$img_name;
                             if(move_uploaded_file($tmp_name,"images/".$new_img_name)){
-                                $pseudo = rand(time(), 100000000);
+                                $unique_id = rand(time(), 100000000);
                                 $encrypt_pass = md5($password);
-                                $insert_query = mysqli_query($conn, "INSERT INTO users (pseudo, prenom, nom, email, password_hash, profile_picture)
-                                VALUES ({$pseudo}, '{$prenom}','{$nom}', '{$email}', '{$encrypt_pass}', '{$new_img_name}')");
+                                $insert_query = mysqli_query($conn, "INSERT INTO users (unique_id, fname, lname, email, password, img, status)
+                                VALUES ({$unique_id}, '{$prenom}','{$nom}', '{$email}', '{$encrypt_pass}', '{$new_img_name}', 'Active now')");
                                 if($insert_query){
                                     $select_sql2 = mysqli_query($conn, "SELECT * FROM users WHERE email = '{$email}'");
                                     if(mysqli_num_rows($select_sql2) > 0){
                                         $result = mysqli_fetch_assoc($select_sql2);
-                                        $_SESSION['unique_id'] = $result['pseudo'];
+                                        $_SESSION['unique_id'] = $result['unique_id'];
                                         echo "success";
                                     }else{
                                         echo "This email address not Exist!";

@@ -34,3 +34,14 @@ WHERE
 -- Afficher un message de confirmation
 SELECT
     'Base de données mise à jour avec succès pour le système d\'invitation!' as message;
+
+-- Création de la table posts pour la gestion des publications avec images
+CREATE TABLE
+    IF NOT EXISTS posts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        content TEXT,
+        image VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
+    );

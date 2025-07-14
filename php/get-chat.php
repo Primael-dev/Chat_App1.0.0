@@ -29,7 +29,7 @@
                         </div>
                         </div>';
         }else{
-            $sql = "SELECT * FROM messages LEFT JOIN users ON users.pseudo = messages.outgoing_msg_id
+            $sql = "SELECT * FROM messages LEFT JOIN users ON users.unique_id = messages.outgoing_msg_id
                     WHERE (outgoing_msg_id = {$outgoing_id} AND incoming_msg_id = {$incoming_id})
                     OR (outgoing_msg_id = {$incoming_id} AND incoming_msg_id = {$outgoing_id}) ORDER BY msg_id";
             $query = mysqli_query($conn, $sql);
@@ -66,7 +66,7 @@
                         $show_image = ($previous_sender !== $current_sender);
                         
                         if($show_image){
-                            $user_image = '<img src="php/images/'.$row['profile_picture'].'" alt="">';
+                            $user_image = '<img src="php/images/'.$row['img'].'" alt="">';
                         }
                         
                         $output .= '<div class="chat incoming">
