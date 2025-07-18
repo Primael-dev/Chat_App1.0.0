@@ -204,7 +204,7 @@ body{
   content: '\f00d';
 }
 .users-list{
-  max-height: 350px;
+  max-height: 75vh;
   overflow-y: auto;
 }
 :is(.users-list, .chat-box)::-webkit-scrollbar{

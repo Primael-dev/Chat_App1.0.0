@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- Coding By CodingNepal - youtube.com/codingnepal -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -39,7 +38,7 @@
           <li class="menu-item">
             <a href="menu.php?page=profil" class="menu-link">
               <span class="material-symbols-rounded">person</span>
-              <span class="menu-label">Profil</span>
+              <span class="menu-label">Fil d'actualité</span>
             </a>
           </li>
           <li class="menu-item">
@@ -48,7 +47,7 @@
               <span class="menu-label">Message</span>
             </a>
           </li>
-          <li class="menu-item">
+          <!-- <li class="menu-item">
             <a href="menu.php?page=notification" class="menu-link">
               <span class="material-symbols-rounded">notifications</span>
               <span class="menu-label">Notification</span>
@@ -59,7 +58,7 @@
               <span class="material-symbols-rounded">settings</span>
               <span class="menu-label">Paramètres</span>
             </a>
-          </li>
+          </li> -->
         </ul>
       </div>
       </aside>

@@ -10,6 +10,19 @@
   <link rel="stylesheet" href="assets/css/header.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <style>
+    button{
+      cursor: pointer;
+      background-color: white;
+      color: #444;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+    button:hover{
+      background-color: #444;
+      color: white;
+    }
+  </style>
 </head>
 <div>
   <nav class="site-nav">
@@ -31,7 +44,7 @@
         </form>
         <ul class="menu-list">
           <li class="menu-item">
-            <a href="menu.php?page=accueil" class="menu-link active">
+            <a href="menu.php?page=accueil" class="menu-link">
               <span class="material-symbols-rounded">home</span>
               <span class="menu-label">Accueil</span>
             </a>
@@ -39,16 +52,16 @@
           <li class="menu-item">
             <a href="menu.php?page=profil" class="menu-link">
               <span class="material-symbols-rounded">person</span>
-              <span class="menu-label">Profil</span>
+              <span class="menu-label">Fil d'actualité</span>
             </a>
           </li>
           <li class="menu-item">
-            <a href="menu.php?page=message" class="menu-link">
+            <a href="menu.php?page=message" class="menu-link active">
               <span class="material-symbols-rounded">mail</span>
               <span class="menu-label">Message</span>
             </a>
           </li>
-          <li class="menu-item">
+          <!-- <li class="menu-item">
             <a href="menu.php?page=notification" class="menu-link">
               <span class="material-symbols-rounded">notifications</span>
               <span class="menu-label">Notification</span>
@@ -59,14 +72,17 @@
               <span class="material-symbols-rounded">settings</span>
               <span class="menu-label">Paramètres</span>
             </a>
-          </li>
+          </li> -->
         </ul>
       </div>
       </aside>
     <div class="main-content">
       <h1 class="page-title">Welcome on ChatApp</h1>
       <div>
-      <p class="card">Welcome to your dashboard! Use the menu to navigate, toggle the sidebar, or switch between light and dark themes to personalize your experience.</p>
+      <p class="card">Échangez avec vos amis, envoyez des invitations pour élargir votre réseau et communiquez en temps réel dans un environnement sécurisé et convivial.</p>
+      </div>
+      <div class="card">
+       <a href="../users.php " style="margin: 45%;">  <button ">Commencer</button></a>
       </div>
     </div>
   </div>

@@ -433,7 +433,7 @@
           <li class="menu-item">
             <a href="menu.php?page=profil" class="menu-link active">
               <span class="material-symbols-rounded">person</span>
-              <span class="menu-label">Profil</span>
+              <span class="menu-label">Fil d'actualité</span>
             </a>
           </li>
           <li class="menu-item">
@@ -442,7 +442,7 @@
               <span class="menu-label">Message</span>
             </a>
           </li>
-          <li class="menu-item">
+          <!-- <li class="menu-item">
             <a href="menu.php?page=notification" class="menu-link">
               <span class="material-symbols-rounded">notifications</span>
               <span class="menu-label">Notification</span>
@@ -453,7 +453,7 @@
               <span class="material-symbols-rounded">settings</span>
               <span class="menu-label">Paramètres</span>
             </a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </aside>
@@ -461,12 +461,12 @@
     <div class="main-content">
       <h1 class="page-title">Welcome on ChatApp</h1>
       <div>
-        <p class="card">Welcome to your dashboard! Use the menu to navigate, toggle the sidebar, or switch between light and dark themes to personalize your experience.</p>
+        <p class="card">Explorez les dernières publications de vos amis, découvrez les tendances du moment et ne manquez aucune actualité importante de votre communauté.</p>
       </div>
       
       <div class="wrapper">
         <section class="profile">
-          <h2>Mon profil</h2>
+          <h2>Actualités</h2>
           <form id="postForm" method="POST" enctype="multipart/form-data">
             <textarea name="content" id="content" rows="3" placeholder="Exprime-toi..."></textarea>
             <input type="file" id="postImage" name="image" accept="image/*" style="margin-top:10px;">
@@ -474,7 +474,7 @@
             <div id="postMessage"></div>
           </form>
           
-          <h3>Mes posts</h3>
+          <h3>Votre fenêtre sur l'actualité mondiale</h3>
           <div class="posts-container" id="postsList">
             <!-- Les posts seront chargés ici -->
           </div>
