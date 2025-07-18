@@ -3,7 +3,7 @@ services:
     name: chatapp-backend
     env: docker
     plan: free
-    repo: https://github.com/ton-nom-utilisateur/ton-repo
+    repo: https://github.com/Primael-dev/Chat_App1.0.0.git
     dockerfilePath: ./Dockerfile
     branch: main
     rootDir: ./
