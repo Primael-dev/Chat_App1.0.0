@@ -1,0 +1,8 @@
+[build]
+  publish = "assets"
+  command = ""
+
+[[redirects]]
+  from = "/*"
+  to = "/index.php"
+  status = 200
